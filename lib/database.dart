@@ -12,7 +12,8 @@ Future<Database> initDatabase() async {
     path,
     version: 1,
     onCreate: (db, version) async {
-      String sqlScript = await rootBundle.loadString('./data/bd.sql');
+      String sqlScript =
+          await rootBundle.loadString('./assets/data/baratie.sql');
       List<String> queries = sqlScript.split(';');
 
       for (String query in queries) {
@@ -27,12 +28,14 @@ Future<Database> initDatabase() async {
 Future<Database> populateDatabase() async {
   final Database db = await initDatabase();
 
-  String jsonString = await rootBundle.loadString('./data/restaurants.json');
+  String jsonString =
+      await rootBundle.loadString('./assets/data/restaurants.json');
   List<dynamic> jsonData = jsonDecode(jsonString);
 
   for (var item in jsonData) {
     await insertRestaurant(db, item);
   }
+
   return db;
 }
 
