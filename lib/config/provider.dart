@@ -38,7 +38,7 @@ class BaratieProvider with ChangeNotifier {
     }
   }
 
-  Future<List<Restaurant>> getTopRatedRestaurants(int limit) async {
+  Future<List<Restaurant>> getTopRatedRestaurants() async {
     try {
       final restaurants = await _database?.rawQuery('''
         SELECT RESTAURANT.*, AVG(REVIEWED.note) as average_rating
@@ -46,8 +46,7 @@ class BaratieProvider with ChangeNotifier {
         LEFT JOIN REVIEWED ON RESTAURANT.idRestau = REVIEWED.idRestau
         GROUP BY RESTAURANT.idRestau
         ORDER BY average_rating DESC
-        LIMIT ?
-      ''', [limit]);
+      ''');
 
       return restaurants?.map((map) => Restaurant.fromMap(map)).toList() ?? [];
     } catch (e) {
