@@ -8,6 +8,7 @@ import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'package:baratie/config/database.dart';
 import 'package:baratie/config/provider.dart';
 import 'package:baratie/views/home/home_view.dart';
+import 'package:baratie/views/search/search_results_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,6 +43,21 @@ class BaratieApp extends StatelessWidget {
         GoRoute(
           path: '/',
           builder: (context, state) => const HomePage(),
+        ),
+        GoRoute(
+          path: '/search-results',
+          builder: (context, state) {
+            final extra = state.extra as Map<String, dynamic>?;
+            if (extra == null) {
+              return const SearchResultsView(query: '');
+            }
+            
+            final query = extra['query'] as String? ?? '';
+            final city = extra['city'] as String?;
+            final type = extra['type'] as String?;
+            
+            return SearchResultsView(query: query, city: city, type: type);
+          },
         ),
       ],
     );

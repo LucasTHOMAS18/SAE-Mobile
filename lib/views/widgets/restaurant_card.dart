@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:baratie/models/restaurant.dart';
 
 class RestaurantCard extends StatelessWidget {
@@ -28,13 +27,13 @@ class RestaurantCard extends StatelessWidget {
               borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
               child: Image.asset(
                 'assets/images/baratie.jpg',
-                height: 120,
+                height: 120, 
                 width: double.infinity,
                 fit: BoxFit.cover,
               ),
-            ), 
+            ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(6.0), // Réduit le padding
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -42,21 +41,21 @@ class RestaurantCard extends StatelessWidget {
                     restaurant.nameR,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 14, // Taille réduite
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 2), // Espace réduit
                   Text(
                     restaurant.city ?? '',
                     style: TextStyle(
                       color: Colors.grey[600],
-                      fontSize: 14,
+                      fontSize: 12, // Taille réduite
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 4), // Espace réduit
                   Wrap(
-                    spacing: 8,
-                    runSpacing: 4,
+                    spacing: 6, // Espacement réduit
+                    runSpacing: 2, // Espacement réduit
                     children: [
                       if (restaurant.accessibl)
                         _buildBadge('Accessible', Colors.green),
@@ -75,7 +74,7 @@ class RestaurantCard extends StatelessWidget {
 
   Widget _buildBadge(String text, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2), // Padding vertical réduit
       decoration: BoxDecoration(
         color: color.withOpacity(0.2),
         borderRadius: BorderRadius.circular(20),
@@ -84,7 +83,7 @@ class RestaurantCard extends StatelessWidget {
         text,
         style: TextStyle(
           color: color,
-          fontSize: 12,
+          fontSize: 10, // Taille de police réduite
         ),
       ),
     );

@@ -6,20 +6,49 @@ import 'package:baratie/models/restaurant.dart';
 import 'package:baratie/views/widgets/restaurant_card.dart';
 import 'package:baratie/views/widgets/search_bar.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final restaurantTypes = [
-      'Tous types',
-      'Fast-food',
-    ];
+  State<HomePage> createState() => _HomePageState();
+}
 
+class _HomePageState extends State<HomePage> {
+  List<String> _restaurantTypes = ['Tous types'];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRestaurantTypes();
+  }
+
+  Future<void> _loadRestaurantTypes() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final provider = Provider.of<BaratieProvider>(context, listen: false);
+      final types = await provider.getRestaurantTypes();
+      
+      setState(() {
+        _restaurantTypes = ['Tous types', ...types];
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          _buildHeader(context, restaurantTypes),
+          _buildHeader(context),
           Expanded(
             child: _buildRestaurantsSection(context),
           ),
@@ -28,7 +57,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, List<String> restaurantTypes) {
+  Widget _buildHeader(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 600;
 
     return Container(
@@ -74,12 +103,15 @@ class HomePage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  RestaurantSearchBar(
-                    restaurantTypes: restaurantTypes,
-                    onSearch: (searchTerm, location, type) {
-                      // Handle search here
-                    },
-                  ),
+                  _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : RestaurantSearchBar(
+                        restaurantTypes: _restaurantTypes,
+                        onSearch: (searchTerm, location, type) {
+                          // This callback is called when search is performed
+                          // The navigation is handled in the search bar widget
+                        },
+                      ),
                 ],
               ),
             ),
@@ -118,7 +150,7 @@ class HomePage extends StatelessWidget {
               
               return Expanded(
                 child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 16,
                     mainAxisSpacing: 16,
