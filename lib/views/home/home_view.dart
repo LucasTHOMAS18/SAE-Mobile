@@ -6,6 +6,7 @@ import 'package:baratie/config/provider.dart';
 import 'package:baratie/models/restaurant.dart';
 import 'package:baratie/views/widgets/restaurant_card.dart';
 import 'package:baratie/views/widgets/search_bar.dart';
+import 'package:baratie/config/auth_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -47,25 +48,56 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Le Baratie'),
-        actions: [
-          TextButton(
-            onPressed: () => context.push('/login'),
-            child: const Text(
-              'Connexion',
-              style: TextStyle(color: Colors.white),
+appBar: AppBar(
+  title: const Text('Le Baratie'),
+  actions: [
+    Consumer<AuthProvider>(
+      builder: (context, auth, child) {
+        if (auth.isLoggedIn) {
+          return ElevatedButton(
+            onPressed: () {
+              Provider.of<AuthProvider>(context, listen: false).logout();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red, 
+              foregroundColor: Colors.white,
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             ),
-          ),
-          TextButton(
-            onPressed: () => context.push('/register'),
-            child: const Text(
-              'Inscription',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
-      ),
+            child: const Text('Déconnexion'),
+          );
+        } else {
+          return Row(
+            children: [
+              ElevatedButton(
+                onPressed: () => context.push('/login'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange, 
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                ),
+                child: const Text('Connexion'),
+              ),
+              const SizedBox(width: 8),
+              ElevatedButton(
+                onPressed: () => context.push('/register'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange, 
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                ),
+                child: const Text('Inscription'),
+              ),
+            ],
+          );
+        }
+      },
+    ),
+    const SizedBox(width: 12),
+  ],
+),
       body: Column(
         children: [
           _buildHeader(context),

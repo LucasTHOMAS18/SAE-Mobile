@@ -11,6 +11,7 @@ import 'package:baratie/views/home/home_view.dart';
 import 'package:baratie/views/search/search_results_view.dart';
 import 'package:baratie/views/auth/login_view.dart';
 import 'package:baratie/views/auth/register_view.dart';
+import 'package:baratie/config/auth_provider.dart';
 
 
 void main() async {
@@ -22,16 +23,20 @@ void main() async {
 
   final database = await populateDatabase();
 
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => BaratieProvider(database),
-        ),
-      ],
-      child: BaratieApp(database),
-    ),
-  );
+runApp(
+  MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create: (context) => BaratieProvider(database),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => AuthProvider(),
+      ),
+    ],
+    child: BaratieApp(database),
+  ),
+);
+
 }
 
 class BaratieApp extends StatelessWidget {

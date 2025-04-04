@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:baratie/config/auth_service.dart';
 import 'package:baratie/config/provider.dart';
+import 'package:baratie/config/auth_provider.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -54,7 +55,7 @@ class _LoginViewState extends State<LoginView> {
                         _isLoading = false;
                       });
                       if (success) {
-                        // Connexion réussie 
+                        Provider.of<AuthProvider>(context, listen: false).login();
                         Navigator.of(context).pop();
                       } else {
                         setState(() {
