@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:baratie/config/provider.dart';
 import 'package:baratie/models/restaurant.dart';
@@ -31,7 +32,7 @@ class _HomePageState extends State<HomePage> {
     try {
       final provider = Provider.of<BaratieProvider>(context, listen: false);
       final types = await provider.getRestaurantTypes();
-      
+
       setState(() {
         _restaurantTypes = ['Tous types', ...types];
         _isLoading = false;
@@ -46,6 +47,25 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Le Baratie'),
+        actions: [
+          TextButton(
+            onPressed: () => context.push('/login'),
+            child: const Text(
+              'Connexion',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          TextButton(
+            onPressed: () => context.push('/register'),
+            child: const Text(
+              'Inscription',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           _buildHeader(context),
@@ -62,7 +82,7 @@ class _HomePageState extends State<HomePage> {
 
     return Container(
       color: const Color(0xFF6CC5D9),
-      height: isMobile 
+      height: isMobile
           ? MediaQuery.of(context).size.height * 0.35
           : MediaQuery.of(context).size.height * 0.42,
       child: Stack(
@@ -104,14 +124,12 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const SizedBox(height: 16),
                   _isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : RestaurantSearchBar(
-                        restaurantTypes: _restaurantTypes,
-                        onSearch: (searchTerm, location, type) {
-                          // This callback is called when search is performed
-                          // The navigation is handled in the search bar widget
-                        },
-                      ),
+                      ? const Center(child: CircularProgressIndicator())
+                      : RestaurantSearchBar(
+                          restaurantTypes: _restaurantTypes,
+                          onSearch: (searchTerm, location, type) {
+                          },
+                        ),
                 ],
               ),
             ),
@@ -143,11 +161,11 @@ class _HomePageState extends State<HomePage> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
-              
+
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return const Center(child: Text('Aucun restaurant trouvé'));
               }
-              
+
               return Expanded(
                 child: GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -162,7 +180,6 @@ class _HomePageState extends State<HomePage> {
                     return RestaurantCard(
                       restaurant: restaurant,
                       onTap: () {
-                        // Navigate to restaurant details
                       },
                     );
                   },
