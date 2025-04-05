@@ -47,20 +47,20 @@ class _LoginViewState extends State<LoginView> {
                         _isLoading = true;
                         _error = null;
                       });
-                      bool success = await authService.loginUser(
+                      final userId = await authService.loginUser(
                         _usernameController.text.trim(),
                         _passwordController.text.trim(),
                       );
                       setState(() {
                         _isLoading = false;
                       });
-                      if (success) {
-                        Provider.of<AuthProvider>(context, listen: false).login();
-                        Navigator.of(context).pop();
+                      if (userId != null) {
+                          Provider.of<AuthProvider>(context, listen: false).login(userId);
+                          Navigator.of(context).pop();
                       } else {
-                        setState(() {
+                          setState(() {
                           _error = 'Nom d\'utilisateur ou mot de passe incorrect.';
-                        });
+                          });
                       }
                     },
                     child: const Text('Se connecter'),

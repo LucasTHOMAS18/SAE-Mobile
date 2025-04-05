@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'package:baratie/models/restaurant.dart';
+import 'package:baratie/models/review.dart';
 
 class BaratieProvider with ChangeNotifier {
   final Database? _database;
@@ -140,4 +141,49 @@ class BaratieProvider with ChangeNotifier {
     return null;
   }
 
+  Future<List<Review>> getReviewsForRestaurant(int idRestau) async {
+    try {
+      final result = await _database?.query(
+        'REVIEWED',
+        where: 'idRestau = ?',
+        whereArgs: [idRestau],
+      );
+      return result?.map((e) => Review.fromMap(e)).toList() ?? [];
+    } catch (e) {
+      print('Erreur fetch reviews: $e');
+      return [];
+    }
+  }
+
+  Future<bool> addReview(Review review) async {
+    try {
+      await _database?.insert(
+        'REVIEWED',
+        review.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      notifyListeners();
+      return true;
+    } catch (e) {
+      print('Erreur ajout review: $e');
+      return false;
+    }
+  }
+
+  Future<String?> getUsernameById(int idUser) async {
+    try {
+      final result = await _database?.query(
+        'USER',
+        where: 'idUser = ?',
+        whereArgs: [idUser],
+        limit: 1,
+      );
+      if (result != null && result.isNotEmpty) {
+        return result.first['username'] as String;
+      }
+    } catch (e) {
+      print('Erreur récupération username : $e');
+    }
+    return null;
+  }
 }
