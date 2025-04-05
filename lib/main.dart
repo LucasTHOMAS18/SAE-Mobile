@@ -1,3 +1,4 @@
+import 'package:baratie/views/details/details_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -74,6 +75,16 @@ class BaratieApp extends StatelessWidget {
         GoRoute(
           path: '/register',
           builder: (context, state) => const RegisterView(),
+         ),
+        GoRoute(
+          path: '/restaurant/:id',
+          builder: (context, state) {
+            final id = int.tryParse(state.pathParameters['id'] ?? '');
+            if (id == null) {
+              return const Scaffold(body: Center(child: Text('ID invalide')));
+            }
+            return DetailsView(idRestaurant: id);
+          },
         ),
       ],
     );

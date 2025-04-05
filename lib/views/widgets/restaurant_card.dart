@@ -1,3 +1,4 @@
+import 'package:baratie/views/details/details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:baratie/models/restaurant.dart';
 
@@ -14,7 +15,14 @@ class RestaurantCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DetailsView(idRestaurant: restaurant.id),
+          ),
+        );
+      },
       child: Card(
         elevation: 2,
         shape: RoundedRectangleBorder(

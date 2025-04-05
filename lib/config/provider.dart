@@ -120,4 +120,24 @@ class BaratieProvider with ChangeNotifier {
       return [];
     }
   }
+
+  Future<Restaurant?> getRestaurantById(int id) async {
+    try {
+      final result = await _database?.query(
+        'RESTAURANT',
+        where: 'idRestau = ?',
+        whereArgs: [id],
+        limit: 1,
+      );
+
+      if (result != null && result.isNotEmpty) {
+        return Restaurant.fromMap(result.first);
+      }
+    } catch (e) {
+      print('Erreur lors de la récupération du restaurant par ID : $e');
+    }
+
+    return null;
+  }
+
 }
