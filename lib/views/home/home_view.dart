@@ -8,6 +8,8 @@ import 'package:baratie/views/widgets/restaurant_card.dart';
 import 'package:baratie/views/widgets/search_bar.dart';
 import 'package:baratie/config/auth_provider.dart';
 
+import '../profile/user_profile_view.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -53,46 +55,62 @@ appBar: AppBar(
   actions: [
     Consumer<AuthProvider>(
       builder: (context, auth, child) {
-        if (auth.isLoggedIn) {
-          return ElevatedButton(
-            onPressed: () {
-              Provider.of<AuthProvider>(context, listen: false).logout();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red, 
-              foregroundColor: Colors.white,
-              elevation: 0,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        return Row(
+          children: [
+            if (auth.isLoggedIn && auth.userId != null)
+              IconButton(
+                tooltip: 'Mon profil',
+                icon: const Icon(Icons.account_circle, size: 28),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => UserProfileView(userId: auth.userId!),
+                    ),
+                  );
+                },
+              ),
+            const SizedBox(width: 8),
+            auth.isLoggedIn
+                ? ElevatedButton(
+              onPressed: () {
+                Provider.of<AuthProvider>(context, listen: false).logout();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              ),
+              child: const Text('Déconnexion'),
+            )
+                : Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () => context.push('/login'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ),
+                  child: const Text('Connexion'),
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: () => context.push('/register'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ),
+                  child: const Text('Inscription'),
+                ),
+              ],
             ),
-            child: const Text('Déconnexion'),
-          );
-        } else {
-          return Row(
-            children: [
-              ElevatedButton(
-                onPressed: () => context.push('/login'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange, 
-                  foregroundColor: Colors.white,
-                  elevation: 0,
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                ),
-                child: const Text('Connexion'),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                onPressed: () => context.push('/register'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange, 
-                  foregroundColor: Colors.white,
-                  elevation: 0,
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                ),
-                child: const Text('Inscription'),
-              ),
-            ],
-          );
-        }
+          ],
+        );
       },
     ),
     const SizedBox(width: 12),

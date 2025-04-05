@@ -25,12 +25,16 @@ class AuthService {
   }
 
 
-  Future<bool> loginUser(String username, String password) async {
+  Future<int?> loginUser(String username, String password) async {
     final result = await database.query(
       'USER',
       where: 'username = ? AND password = ?',
       whereArgs: [username, password],
     );
-    return result.isNotEmpty;
+    if (result.isNotEmpty) {
+      return result.first['idUser'] as int;
+    }
+    return null;
   }
+
 }
