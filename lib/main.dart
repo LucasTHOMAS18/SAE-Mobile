@@ -10,6 +10,10 @@ import 'package:baratie/config/database.dart';
 import 'package:baratie/config/provider.dart';
 import 'package:baratie/views/home/home_view.dart';
 import 'package:baratie/views/search/search_results_view.dart';
+import 'package:baratie/views/auth/login_view.dart';
+import 'package:baratie/views/auth/register_view.dart';
+import 'package:baratie/config/auth_provider.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,16 +24,20 @@ void main() async {
 
   final database = await populateDatabase();
 
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => BaratieProvider(database),
-        ),
-      ],
-      child: BaratieApp(database),
-    ),
-  );
+runApp(
+  MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create: (context) => BaratieProvider(database),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => AuthProvider(),
+      ),
+    ],
+    child: BaratieApp(database),
+  ),
+);
+
 }
 
 class BaratieApp extends StatelessWidget {
@@ -52,15 +60,22 @@ class BaratieApp extends StatelessWidget {
             if (extra == null) {
               return const SearchResultsView(query: '');
             }
-            
+
             final query = extra['query'] as String? ?? '';
             final city = extra['city'] as String?;
             final type = extra['type'] as String?;
-            
+
             return SearchResultsView(query: query, city: city, type: type);
           },
         ),
-
+        GoRoute(
+          path: '/login',
+          builder: (context, state) => const LoginView(),
+        ),
+        GoRoute(
+          path: '/register',
+          builder: (context, state) => const RegisterView(),
+         ),
         GoRoute(
           path: '/restaurant/:id',
           builder: (context, state) {

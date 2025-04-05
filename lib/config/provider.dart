@@ -8,6 +8,8 @@ class BaratieProvider with ChangeNotifier {
 
   BaratieProvider(this._database);
 
+  Database get database => _database!;
+
   Future<int?> insertData({
     required String tableName,
     required Map<String, dynamic> data,
