@@ -7,6 +7,7 @@ import 'package:baratie/models/restaurant.dart';
 
 import '../../config/auth_provider.dart';
 import '../../models/review.dart';
+import 'package:baratie/views/profile/user_profile_view.dart';
 
 class DetailsView extends StatelessWidget {
   final int idRestaurant;
@@ -385,6 +386,14 @@ class DetailsView extends StatelessWidget {
                                         Text(review.comment),
                                       ],
                                     ),
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => UserProfileView(userId: review.idUser),
+                                        ),
+                                      );
+                                    },
                                   );
                                 },
                               );

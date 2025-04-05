@@ -201,4 +201,18 @@ class BaratieProvider with ChangeNotifier {
       return 0.0;
     }
   }
+
+  Future<List<Review>> getReviewsByUser(int idUser) async {
+    try {
+      final result = await _database?.query(
+        'REVIEWED',
+        where: 'idUser = ?',
+        whereArgs: [idUser],
+      );
+      return result?.map((e) => Review.fromMap(e)).toList() ?? [];
+    } catch (e) {
+      print('Erreur fetch reviews user : $e');
+      return [];
+    }
+  }
 }
