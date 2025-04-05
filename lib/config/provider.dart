@@ -186,4 +186,19 @@ class BaratieProvider with ChangeNotifier {
     }
     return null;
   }
+
+  Future<double> getAverageRatingForRestaurant(int idRestau) async {
+    try {
+      final result = await _database?.rawQuery(
+        'SELECT AVG(note) as average FROM REVIEWED WHERE idRestau = ?',
+        [idRestau],
+      );
+
+      final avg = result?.first['average'];
+      return (avg != null) ? (avg as double) : 0.0;
+    } catch (e) {
+      print('Erreur moyenne note : $e');
+      return 0.0;
+    }
+  }
 }

@@ -220,7 +220,40 @@ class DetailsView extends StatelessWidget {
                         }),
                       ],
 
+                      // Note moyenne
+                      const SizedBox(height: 24),
+                      FutureBuilder<double>(
+                        future: provider.getAverageRatingForRestaurant(idRestaurant),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const SizedBox(); // ou loader
+                          }
+
+                          final average = snapshot.data ?? 0.0;
+
+                          return Row(
+                            children: [
+                              const Icon(Icons.star, color: Colors.amber),
+                              const SizedBox(width: 4),
+                              Text(
+                                average > 0
+                                    ? 'Note moyenne : ${average.toStringAsFixed(1)}/5'
+                                    : 'Pas encore de note',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+
                       // Ajout d'avis
+                      const SizedBox(height: 24),
+
+                      Text(
+                        'Avis des clients',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+
                       const SizedBox(height: 24),
                       Consumer<AuthProvider>(
                         builder: (context, auth, _) {
@@ -243,15 +276,21 @@ class DetailsView extends StatelessWidget {
                                         Theme.of(context).textTheme.titleMedium,
                                   ),
                                   const SizedBox(height: 12),
-                                  Text('Note : ${noteValue.toInt()}'),
-                                  Slider(
-                                    value: noteValue,
-                                    min: 0,
-                                    max: 5,
-                                    divisions: 5,
-                                    label: '${noteValue.toInt()}',
-                                    onChanged: (val) =>
-                                        setState(() => noteValue = val),
+                                  Text('Note :', style: Theme.of(context).textTheme.bodyLarge),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: List.generate(5, (index) {
+                                      final starIndex = index + 1;
+                                      return IconButton(
+                                        icon: Icon(
+                                          noteValue >= starIndex ? Icons.star : Icons.star_border,
+                                          color: Colors.amber,
+                                          size: 32,
+                                        ),
+                                        onPressed: () => setState(() => noteValue = starIndex.toDouble()),
+                                        splashRadius: 20,
+                                      );
+                                    }),
                                   ),
                                   const SizedBox(height: 12),
                                   TextField(
@@ -296,12 +335,9 @@ class DetailsView extends StatelessWidget {
                         },
                       ),
 
+
                       // Affichage des Avis
                       const SizedBox(height: 24),
-                      Text(
-                        'Avis des clients',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
                       FutureBuilder<List<Review>>(
                         future: provider.getReviewsForRestaurant(idRestaurant),
                         builder: (context, reviewSnapshot) {
