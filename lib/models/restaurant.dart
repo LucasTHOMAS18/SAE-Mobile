@@ -25,6 +25,17 @@ class Restaurant {
     'PH'
   ];
 
+  static const Map<String, String> dayLabels = {
+    'Mo': 'Lundi',
+    'Tu': 'Mardi',
+    'We': 'Mercredi',
+    'Th': 'Jeudi',
+    'Fr': 'Vendredi',
+    'Sa': 'Samedi',
+    'Su': 'Dimanche',
+    'PH': 'Jours fériés',
+  };
+
   Restaurant({
     required this.id,
     required this.nameR,
