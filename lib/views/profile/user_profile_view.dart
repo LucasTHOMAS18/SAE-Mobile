@@ -137,9 +137,15 @@ class UserProfileView extends StatelessWidget {
 
             final restaurants = restaurantsSnapshot.data ?? [];
 
-            return RestaurantListing(
-              restaurants: restaurants,
-              emptyMessage: 'Aucun restaurant favori',
+            return Column(
+              children: [
+                Expanded(
+                  child: RestaurantListing(
+                    restaurants: restaurants,
+                    emptyMessage: 'Aucun restaurant en favoris',
+                  ),
+                ),
+              ],
             );
           },
         );

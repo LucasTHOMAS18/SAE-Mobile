@@ -215,11 +215,15 @@ class _HomePageState extends State<HomePage> {
 
         final restaurants = snapshot.data ?? [];
 
-        return Expanded(
-          child: RestaurantListing(
-            restaurants: restaurants,
-            emptyMessage: 'Aucun restaurant à la une',
-          ),
+        return Column(
+          children: [
+            Expanded(
+              child: RestaurantListing(
+                restaurants: restaurants,
+                emptyMessage: 'Aucun restaurant à la une',
+              ),
+            ),
+          ],
         );
       },
     );
