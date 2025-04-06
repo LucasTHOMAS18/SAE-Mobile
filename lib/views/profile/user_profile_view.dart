@@ -6,10 +6,8 @@ import 'package:baratie/config/provider.dart';
 import 'package:baratie/models/review.dart';
 import 'package:baratie/models/restaurant.dart';
 import 'package:baratie/views/details/details_view.dart';
-import 'package:baratie/views/widgets/restaurant_card.dart';
+import 'package:baratie/views/widgets/restaurant_listing.dart';
 import 'package:baratie/services/favorite_service.dart';
-
-import '../widgets/restaurant_listing.dart';
 
 class UserProfileView extends StatelessWidget {
   final int userId;

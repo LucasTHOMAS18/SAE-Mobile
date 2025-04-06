@@ -3,9 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:baratie/config/provider.dart';
 import 'package:baratie/models/restaurant.dart';
-import 'package:baratie/views/widgets/restaurant_card.dart';
-
-import '../widgets/restaurant_listing.dart';
+import 'package:baratie/views/widgets/restaurant_listing.dart';
 
 class SearchResultsView extends StatelessWidget {
   final String query;

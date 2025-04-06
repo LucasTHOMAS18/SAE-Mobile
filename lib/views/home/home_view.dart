@@ -4,12 +4,10 @@ import 'package:go_router/go_router.dart';
 
 import 'package:baratie/config/provider.dart';
 import 'package:baratie/models/restaurant.dart';
-import 'package:baratie/views/widgets/restaurant_card.dart';
+import 'package:baratie/views/widgets/restaurant_listing.dart';
 import 'package:baratie/views/widgets/search_bar.dart';
 import 'package:baratie/views/profile/user_profile_view.dart';
 import 'package:baratie/config/auth_provider.dart';
-
-import '../widgets/restaurant_listing.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

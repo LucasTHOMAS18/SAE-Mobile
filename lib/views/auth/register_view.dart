@@ -21,10 +21,6 @@ class _RegisterViewState extends State<RegisterView> {
 
   @override
   Widget build(BuildContext context) {
-    final authService = AuthService(
-      Provider.of<BaratieProvider>(context, listen: false).database,
-    );
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Inscription'),
