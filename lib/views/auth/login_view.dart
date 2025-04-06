@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:baratie/config/auth_service.dart';
+import 'package:baratie/services/auth_service.dart';
 import 'package:baratie/config/provider.dart';
 import 'package:baratie/config/auth_provider.dart';
 
