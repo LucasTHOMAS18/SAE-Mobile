@@ -6,9 +6,8 @@ import 'package:baratie/config/provider.dart';
 import 'package:baratie/models/restaurant.dart';
 import 'package:baratie/views/widgets/restaurant_card.dart';
 import 'package:baratie/views/widgets/search_bar.dart';
+import 'package:baratie/views/profile/user_profile_view.dart';
 import 'package:baratie/config/auth_provider.dart';
-
-import '../profile/user_profile_view.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -50,75 +49,78 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-appBar: AppBar(
-  title: const Text('Le Baratie'),
-  actions: [
-    Consumer<AuthProvider>(
-      builder: (context, auth, child) {
-        return Row(
-          children: [
-            if (auth.isLoggedIn && auth.userId != null)
-              IconButton(
-                tooltip: 'Mon profil',
-                icon: const Icon(Icons.account_circle, size: 28),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => UserProfileView(userId: auth.userId!),
+      appBar: AppBar(
+        title: const Text('Le Baratie'),
+        actions: [
+          Consumer<AuthProvider>(
+            builder: (context, auth, child) {
+              return Row(
+                children: [
+                  if (auth.isLoggedIn && auth.userId != null)
+                    IconButton(
+                      tooltip: 'Mon profil',
+                      icon: const Icon(Icons.account_circle, size: 28),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => UserProfileView(userId: auth.userId!),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
-            const SizedBox(width: 8),
-            auth.isLoggedIn
-                ? ElevatedButton(
-              onPressed: () {
-                Provider.of<AuthProvider>(context, listen: false).logout();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-                elevation: 0,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              ),
-              child: const Text('Déconnexion'),
-            )
-                : Row(
-              children: [
-                ElevatedButton(
-                  onPressed: () => context.push('/login'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  ),
-                  child: const Text('Connexion'),
-                ),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: () => context.push('/register'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  ),
-                  child: const Text('Inscription'),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-    ),
-    const SizedBox(width: 12),
-  ],
-),
+                  const SizedBox(width: 8),
+                  auth.isLoggedIn
+                      ? ElevatedButton(
+                          onPressed: () {
+                            Provider.of<AuthProvider>(context, listen: false).logout();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          ),
+                          child: const Text('Déconnexion'),
+                        )
+                      : Row(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () => context.push('/login'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.orange,
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              ),
+                              child: const Text('Connexion'),
+                            ),
+                            const SizedBox(width: 8),
+                            ElevatedButton(
+                              onPressed: () => context.push('/register'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.orange,
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              ),
+                              child: const Text('Inscription'),
+                            ),
+                          ],
+                        ),
+                ],
+              );
+            },
+          ),
+          const SizedBox(width: 12),
+        ],
+      ),
       body: Column(
         children: [
-          _buildHeader(context),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.35,
+            child: _buildHeader(context),
+          ),
           Expanded(
             child: _buildRestaurantsSection(context),
           ),
@@ -132,9 +134,6 @@ appBar: AppBar(
 
     return Container(
       color: const Color(0xFF6CC5D9),
-      height: isMobile
-          ? MediaQuery.of(context).size.height * 0.35
-          : MediaQuery.of(context).size.height * 0.42,
       child: Stack(
         children: [
           Positioned(
@@ -160,27 +159,28 @@ appBar: AppBar(
               width: isMobile
                   ? MediaQuery.of(context).size.width * 0.9
                   : MediaQuery.of(context).size.width * 0.4,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Où allez vous manger ?',
-                    style: TextStyle(
-                      fontSize: isMobile ? 24 : 32,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Où allez vous manger ?',
+                      style: TextStyle(
+                        fontSize: isMobile ? 24 : 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  _isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : RestaurantSearchBar(
-                          restaurantTypes: _restaurantTypes,
-                          onSearch: (searchTerm, location, type) {
-                          },
-                        ),
-                ],
+                    const SizedBox(height: 16),
+                    _isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : RestaurantSearchBar(
+                            restaurantTypes: _restaurantTypes,
+                            onSearch: (searchTerm, location, type) {},
+                          ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -205,19 +205,19 @@ appBar: AppBar(
             ),
           ),
           const SizedBox(height: 16),
-          FutureBuilder<List<Restaurant>>(
-            future: restaurants,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
+          Expanded(
+            child: FutureBuilder<List<Restaurant>>(
+              future: restaurants,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-              if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text('Aucun restaurant trouvé'));
-              }
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('Aucun restaurant trouvé'));
+                }
 
-              return Expanded(
-                child: GridView.builder(
+                return GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 16,
@@ -229,13 +229,11 @@ appBar: AppBar(
                     final restaurant = snapshot.data![index];
                     return RestaurantCard(
                       restaurant: restaurant,
-                      onTap: () {
-                      },
                     );
                   },
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ],
       ),

@@ -63,7 +63,6 @@ class BaratieProvider with ChangeNotifier {
     String? type,
   }) async {
     try {
-      // Build the query dynamically based on provided filters
       String whereClause = '';
       List<dynamic> whereArgs = [];
       
@@ -88,7 +87,6 @@ class BaratieProvider with ChangeNotifier {
         whereArgs.add(type);
       }
       
-      // If no filters provided, return all restaurants
       if (whereClause.isEmpty) {
         return getAllRestaurants();
       }
@@ -101,7 +99,6 @@ class BaratieProvider with ChangeNotifier {
       
       return restaurants?.map((map) => Restaurant.fromMap(map)).toList() ?? [];
     } catch (e) {
-      print('Error searching restaurants: $e');
       return [];
     }
   }
@@ -117,7 +114,6 @@ class BaratieProvider with ChangeNotifier {
           .where((type) => type.isNotEmpty)
           .toList() ?? [];
     } catch (e) {
-      print('Error fetching restaurant types: $e');
       return [];
     }
   }
@@ -150,7 +146,6 @@ class BaratieProvider with ChangeNotifier {
       );
       return result?.map((e) => Review.fromMap(e)).toList() ?? [];
     } catch (e) {
-      print('Erreur fetch reviews: $e');
       return [];
     }
   }
@@ -165,7 +160,6 @@ class BaratieProvider with ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      print('Erreur ajout review: $e');
       return false;
     }
   }
@@ -197,7 +191,6 @@ class BaratieProvider with ChangeNotifier {
       final avg = result?.first['average'];
       return (avg != null) ? (avg as double) : 0.0;
     } catch (e) {
-      print('Erreur moyenne note : $e');
       return 0.0;
     }
   }
@@ -211,8 +204,18 @@ class BaratieProvider with ChangeNotifier {
       );
       return result?.map((e) => Review.fromMap(e)).toList() ?? [];
     } catch (e) {
-      print('Erreur fetch reviews user : $e');
       return [];
     }
+  }
+
+  Future<List<Restaurant>> getRestaurantsByIds(List<int> ids) async {
+    List<Restaurant> restaurants = [];
+    for (int id in ids) {
+      final restaurant = await getRestaurantById(id);
+      if (restaurant != null) {
+        restaurants.add(restaurant);
+      }
+    }
+    return restaurants;
   }
 }

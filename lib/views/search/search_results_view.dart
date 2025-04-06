@@ -86,10 +86,6 @@ class SearchResultsView extends StatelessWidget {
                       final restaurant = restaurants[index];
                       return RestaurantCard(
                         restaurant: restaurant,
-                        onTap: () {
-                          // Navigate to restaurant details
-                          // TODO: Implement when restaurant details view is available
-                        },
                       );
                     },
                   ),

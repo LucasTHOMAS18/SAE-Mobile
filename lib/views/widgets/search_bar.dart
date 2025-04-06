@@ -37,7 +37,7 @@ class _RestaurantSearchBarState extends State<RestaurantSearchBar> {
 
     try {
       final provider = Provider.of<BaratieProvider>(context, listen: false);
-      await provider.getRestaurantTypes(); // Load types for provider cache
+      await provider.getRestaurantTypes();
       setState(() {
         _isLoading = false;
       });
@@ -53,10 +53,8 @@ class _RestaurantSearchBarState extends State<RestaurantSearchBar> {
     final location = _locationController.text.trim();
     final type = _selectedType == 'Tous types' ? '' : _selectedType;
 
-    // Call the callback
     widget.onSearch(query, location, type);
 
-    // Navigate to search results
     context.push('/search-results', extra: {
       'query': query,
       'city': location.isEmpty ? null : location,
@@ -82,7 +80,6 @@ class _RestaurantSearchBarState extends State<RestaurantSearchBar> {
       ),
       child: Column(
         children: [
-          // Search keywords field
           TextField(
             controller: _searchController,
             decoration: const InputDecoration(
@@ -93,7 +90,6 @@ class _RestaurantSearchBarState extends State<RestaurantSearchBar> {
           ),
           const Divider(),
           
-          // Location field
           TextField(
             controller: _locationController,
             decoration: const InputDecoration(
@@ -104,7 +100,6 @@ class _RestaurantSearchBarState extends State<RestaurantSearchBar> {
           ),
           const Divider(),
           
-          // Type dropdown
           if (_isLoading) 
             const Center(child: CircularProgressIndicator())
           else 
@@ -130,7 +125,6 @@ class _RestaurantSearchBarState extends State<RestaurantSearchBar> {
           
           const SizedBox(height: 8),
           
-          // Search button
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(

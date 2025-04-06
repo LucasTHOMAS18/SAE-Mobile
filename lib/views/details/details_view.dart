@@ -227,7 +227,7 @@ class DetailsView extends StatelessWidget {
                         future: provider.getAverageRatingForRestaurant(idRestaurant),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState == ConnectionState.waiting) {
-                            return const SizedBox(); // ou loader
+                            return const SizedBox(); 
                           }
 
                           final average = snapshot.data ?? 0.0;
