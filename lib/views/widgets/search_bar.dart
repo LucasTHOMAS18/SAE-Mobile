@@ -130,13 +130,13 @@ class _RestaurantSearchBarState extends State<RestaurantSearchBar> {
             child: ElevatedButton(
               onPressed: _performSearch,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF6CC5D9),
-                foregroundColor: Colors.white,
+                backgroundColor: Colors.black,
+                foregroundColor: Colors.transparent,
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),
               child: const Text(
                 'Rechercher',
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 16, color: Colors.white),
               ),
             ),
           ),

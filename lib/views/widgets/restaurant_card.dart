@@ -6,6 +6,8 @@ import 'package:baratie/models/restaurant.dart';
 import 'package:baratie/services/favorite_service.dart';
 import 'package:baratie/views/details/details_view.dart';
 
+import '../../config/provider.dart';
+
 class RestaurantCard extends StatefulWidget {
   final Restaurant restaurant;
 
@@ -79,77 +81,117 @@ class _RestaurantCardState extends State<RestaurantCard> {
         );
       },
       child: Card(
-        elevation: 2,
+        elevation: 0,
+        color: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(16),
         ),
-        child: Stack(
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Stack(
               children: [
                 ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+                  borderRadius: BorderRadius.circular(16), // arrondi partout
                   child: Image.asset(
                     'assets/images/baratie.jpg',
-                    height: 120, 
+                    height: 160,
                     width: double.infinity,
                     fit: BoxFit.cover,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(6.0), 
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.restaurant.nameR,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
+                if (isLoggedIn)
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: _isLoadingFavorite
+                        ? const CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation(Colors.white),
+                      strokeWidth: 2,
+                    )
+                        : IconButton(
+                      icon: Icon(
+                        _isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: _isFavorite ? Colors.red : Colors.white,
                       ),
-                      const SizedBox(height: 2), 
-                      Text(
-                        widget.restaurant.city ?? '',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 12, 
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Wrap(
-                        spacing: 6,
-                        runSpacing: 2, 
-                        children: [
-                          if (widget.restaurant.accessibl)
-                            _buildBadge('Accessible', Colors.green),
-                          if (widget.restaurant.delivery)
-                            _buildBadge('Livraison', Colors.blue),
-                        ],
-                      ),
-                    ],
+                      onPressed: _toggleFavorite,
+                    ),
                   ),
-                ),
               ],
             ),
-            if (isLoggedIn)
-              Positioned(
-                top: 8,
-                right: 8,
-                child: _isLoadingFavorite
-                    ? const CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation(Colors.white),
-                        strokeWidth: 2,
-                      )
-                    : IconButton(
-                        icon: Icon(
-                          _isFavorite ? Icons.favorite : Icons.favorite_border,
-                          color: _isFavorite ? Colors.red : Colors.white,
-                        ),
-                        onPressed: _toggleFavorite,
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Nom
+                  Text(
+                    widget.restaurant.nameR,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+
+                  // Adresse
+                  Text(
+                    widget.restaurant.getAddress(),
+                    style: TextStyle(
+                      color: Colors.grey[700],
+                      fontSize: 13,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+
+                  // Note + avis
+                  FutureBuilder<double>(
+                    future: Provider.of<BaratieProvider>(context, listen: false)
+                        .getAverageRatingForRestaurant(widget.restaurant.id),
+                    builder: (context, snapshot) {
+                      final avg = (snapshot.data ?? 0).toStringAsFixed(1);
+                      return Text(
+                        '★ $avg',
+                        style: const TextStyle(fontSize: 13),
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  // Ouvert / fermé
+                  Builder(builder: (context) {
+                    final isOpen = widget.restaurant.isCurrentlyOpen();
+                    final statusText = isOpen
+                        ? 'Ouvert • Ferme à ${widget.restaurant.whenWillClose()}'
+                        : 'Fermé • Ouvre à ${widget.restaurant.whenWillOpen()}';
+
+                    return Text(
+                      statusText,
+                      style: TextStyle(
+                        color: isOpen ? Colors.green : Colors.red,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
                       ),
+                    );
+                  }),
+
+                  const SizedBox(height: 8),
+
+                  // Badges
+                  Wrap(
+                    spacing: 6,
+                    children: [
+                      if (widget.restaurant.accessibl)
+                        _buildBadge('Accessible', Colors.green),
+                      if (widget.restaurant.delivery)
+                        _buildBadge('Livraison', Colors.blue),
+                    ],
+                  ),
+                ],
               ),
+            ),
           ],
         ),
       ),

@@ -5,6 +5,8 @@ import 'package:baratie/config/provider.dart';
 import 'package:baratie/models/restaurant.dart';
 import 'package:baratie/views/widgets/restaurant_card.dart';
 
+import '../widgets/restaurant_listing.dart';
+
 class SearchResultsView extends StatelessWidget {
   final String query;
   final String? city;
@@ -62,36 +64,24 @@ class SearchResultsView extends StatelessWidget {
               ),
             );
           }
-          
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+                child: Text(
                   '${restaurants.length} résultat${restaurants.length > 1 ? 's' : ''} trouvé${restaurants.length > 1 ? 's' : ''}',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.8,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                    ),
-                    itemCount: restaurants.length,
-                    itemBuilder: (context, index) {
-                      final restaurant = restaurants[index];
-                      return RestaurantCard(
-                        restaurant: restaurant,
-                      );
-                    },
-                  ),
+              ),
+              Expanded(
+                child: RestaurantListing(
+                  restaurants: restaurants,
+                  emptyMessage: 'Aucun résultat avec ces critères',
                 ),
-              ],
-            ),
+              ),
+            ],
           );
         },
       ),
