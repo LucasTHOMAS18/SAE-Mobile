@@ -96,8 +96,8 @@ class BaratieApp extends StatelessWidget {
             seedColor: const Color(0xFF6CC5D9), surface: Colors.white),
         useMaterial3: true,
         appBarTheme: const AppBarTheme(
+          foregroundColor: Colors.black, // <-- titre, icônes, flèches noires
           backgroundColor: Color(0xFF6CC5D9),
-          foregroundColor: Colors.white,
           elevation: 0,
           scrolledUnderElevation: 0,
         ),
