@@ -14,7 +14,6 @@ import 'package:baratie/views/auth/login_view.dart';
 import 'package:baratie/views/auth/register_view.dart';
 import 'package:baratie/config/auth_provider.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -24,20 +23,19 @@ void main() async {
 
   final database = await populateDatabase();
 
-runApp(
-  MultiProvider(
-    providers: [
-      ChangeNotifierProvider(
-        create: (context) => BaratieProvider(database),
-      ),
-      ChangeNotifierProvider(
-        create: (context) => AuthProvider(),
-      ),
-    ],
-    child: BaratieApp(database),
-  ),
-);
-
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => BaratieProvider(database),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => AuthProvider(),
+        ),
+      ],
+      child: BaratieApp(database),
+    ),
+  );
 }
 
 class BaratieApp extends StatelessWidget {
@@ -75,7 +73,7 @@ class BaratieApp extends StatelessWidget {
         GoRoute(
           path: '/register',
           builder: (context, state) => const RegisterView(),
-         ),
+        ),
         GoRoute(
           path: '/restaurant/:id',
           builder: (context, state) {
@@ -94,8 +92,15 @@ class BaratieApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'Inter',
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF6CC5D9)),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color(0xFF6CC5D9), surface: Colors.white),
         useMaterial3: true,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF6CC5D9),
+          foregroundColor: Colors.white,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
       ),
       routerConfig: router,
     );

@@ -9,6 +9,8 @@ import 'package:baratie/views/details/details_view.dart';
 import 'package:baratie/views/widgets/restaurant_card.dart';
 import 'package:baratie/services/favorite_service.dart';
 
+import '../widgets/restaurant_listing.dart';
+
 class UserProfileView extends StatelessWidget {
   final int userId;
 
@@ -137,22 +139,9 @@ class UserProfileView extends StatelessWidget {
 
             final restaurants = restaurantsSnapshot.data ?? [];
 
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.8,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                ),
-                itemCount: restaurants.length,
-                itemBuilder: (context, index) {
-                  return RestaurantCard(
-                    restaurant: restaurants[index],
-                  );
-                },
-              ),
+            return RestaurantListing(
+              restaurants: restaurants,
+              emptyMessage: 'Aucun restaurant favori',
             );
           },
         );

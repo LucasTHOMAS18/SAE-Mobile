@@ -9,6 +9,8 @@ import 'package:baratie/views/widgets/search_bar.dart';
 import 'package:baratie/views/profile/user_profile_view.dart';
 import 'package:baratie/config/auth_provider.dart';
 
+import '../widgets/restaurant_listing.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -50,7 +52,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Le Baratie'),
+        title: Image.asset(
+          'assets/images/logo.png',
+          height: 40,
+        ),
         actions: [
           Consumer<AuthProvider>(
             builder: (context, auth, child) {
@@ -64,7 +69,8 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => UserProfileView(userId: auth.userId!),
+                            builder: (_) =>
+                                UserProfileView(userId: auth.userId!),
                           ),
                         );
                       },
@@ -73,38 +79,48 @@ class _HomePageState extends State<HomePage> {
                   auth.isLoggedIn
                       ? ElevatedButton(
                           onPressed: () {
-                            Provider.of<AuthProvider>(context, listen: false).logout();
+                            Provider.of<AuthProvider>(context, listen: false)
+                                .logout();
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
+                            backgroundColor: Colors.black,
                             foregroundColor: Colors.white,
+                            shape: const StadiumBorder(),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 12),
                             elevation: 0,
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                           ),
-                          child: const Text('Déconnexion'),
+                          child: const Text('Déconnexion',
+                              style: TextStyle(fontSize: 16)),
                         )
                       : Row(
                           children: [
-                            ElevatedButton(
+                            OutlinedButton(
                               onPressed: () => context.push('/login'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.orange,
-                                foregroundColor: Colors.white,
-                                elevation: 0,
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              style: OutlinedButton.styleFrom(
+                                side: const BorderSide(
+                                    color: Colors.black, width: 3),
+                                shape: const StadiumBorder(),
+                                foregroundColor: Colors.black,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 12),
                               ),
-                              child: const Text('Connexion'),
+                              child: const Text('Connexion',
+                                  style: TextStyle(fontSize: 16)),
                             ),
                             const SizedBox(width: 8),
                             ElevatedButton(
                               onPressed: () => context.push('/register'),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.orange,
+                                backgroundColor: Colors.black,
                                 foregroundColor: Colors.white,
+                                shape: const StadiumBorder(),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 12),
                                 elevation: 0,
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                               ),
-                              child: const Text('Inscription'),
+                              child: const Text('Inscription',
+                                  style: TextStyle(fontSize: 16)),
                             ),
                           ],
                         ),
@@ -190,53 +206,24 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildRestaurantsSection(BuildContext context) {
-    final restaurants = Provider.of<BaratieProvider>(context).getTopRatedRestaurants();
+    final future = Provider.of<BaratieProvider>(context).getTopRatedRestaurants();
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Restaurants à la une',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+    return FutureBuilder<List<Restaurant>>(
+      future: future,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final restaurants = snapshot.data ?? [];
+
+        return Expanded(
+          child: RestaurantListing(
+            restaurants: restaurants,
+            emptyMessage: 'Aucun restaurant à la une',
           ),
-          const SizedBox(height: 16),
-          Expanded(
-            child: FutureBuilder<List<Restaurant>>(
-              future: restaurants,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('Aucun restaurant trouvé'));
-                }
-
-                return GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    childAspectRatio: 0.8,
-                  ),
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index) {
-                    final restaurant = snapshot.data![index];
-                    return RestaurantCard(
-                      restaurant: restaurant,
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

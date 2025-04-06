@@ -49,6 +49,7 @@ class BaratieProvider with ChangeNotifier {
         LEFT JOIN REVIEWED ON RESTAURANT.idRestau = REVIEWED.idRestau
         GROUP BY RESTAURANT.idRestau
         ORDER BY average_rating DESC
+        LIMIT(20);
       ''');
 
       return restaurants?.map((map) => Restaurant.fromMap(map)).toList() ?? [];
